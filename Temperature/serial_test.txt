@@ -1,0 +1,15 @@
+import arduinoSerial
+
+# def setupSerial():
+# 	global arduino
+# 	arduino=arduinoSerial.Arduino(57600,'*',0)
+
+
+
+
+
+	
+if __name__ == "__main__":
+	app.run(debug=True)
+
+	

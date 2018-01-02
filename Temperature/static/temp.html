@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>TemperatureServer</title>
+
+
+<script src="res/raphael-2.1.4.min.js"></script>     
+<script src="res/justgage.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script type="text/javascript">
+	var g1;
+	var i=19.00;
+	$(document).ready(function () {
+		var g1 = new JustGage({
+          id: "status",
+          value: 5.50,
+          min: 0,
+          max: 55,
+          title: "Current Temperature",
+          decimals: 2,
+          titleFontFamily: 'lcd',
+          titleFontColor: "red",
+          valueFontColor: "red",
+          valueFontFamily: "lcd",
+          labelFontColor: "red",
+          label:'CURRENT TEMPERATURE',         
+          textRenderer: customValue,
+          gaugeWidthScale: 0.5,
+          stroke: '#1A1A1A',
+          symbol: '%',
+	       pointer: true,
+	       pointerOptions: {
+	         toplength: -20,
+	         bottomlength: 50,
+	         bottomwidth: 5,
+	         color: '#FF0A00',
+	         stroke: '#1A1A1A',
+	         stroke_width: 3,
+	         stroke_linecap: 'round',  
+	       },
+	       customSectors: [
+        		{color : "#00ff00",
+        		lo : 0,
+        		hi : 25},
+        		{color : "#FF8900",
+        		lo : 25,
+        		hi : 30},
+        		{color : "#FF0900",
+        		lo : 30,
+        		hi : 55}],
+      });
+      var g2 = new JustGage({
+          id: "min",
+          value: 5.50,
+          min: 0,
+          max: 55,
+          title: "Min. Temperature",
+          decimals: 2,
+          titleFontFamily: 'lcd',
+          titleFontColor: "red",
+          valueFontColor: "red",
+          valueFontFamily: "lcd",
+          labelFontColor: "red",
+          label:'MIN. TEMPERATURE',         
+          textRenderer: customValue,
+          gaugeWidthScale: 0.5,
+          stroke: '#1A1A1A',
+          symbol: '%',
+	       pointer: true,
+	       pointerOptions: {
+	         toplength: -20,
+	         bottomlength: 30,
+	         bottomwidth: 5,
+	         color: '#FF0A00',
+	         stroke: '#1A1A1A',
+	         stroke_width: 3,
+	         stroke_linecap: 'round',  
+	       },
+	       customSectors: [
+        		{color : "#00ff00",
+        		lo : 0,
+        		hi : 25},
+        		{color : "#FF8900",
+        		lo : 25,
+        		hi : 30},
+        		{color : "#FF0900",
+        		lo : 30,
+        		hi : 55}],
+      });
+      var g3 = new JustGage({
+          id: "max",
+          value: 5.50,
+          min: 0,
+          max: 55,
+          title: "Max. Temperature",
+          decimals: 2,
+          titleFontFamily: 'lcd',
+          titleFontColor: "red",
+          valueFontColor: "red",
+          valueFontFamily: "lcd",
+          labelFontColor: "red",
+          label:'MAX. TEMPERATURE',         
+          textRenderer: customValue,
+          gaugeWidthScale: 0.5,
+          stroke: '#1A1A1A',
+          symbol: '%',
+	       pointer: true,
+	       pointerOptions: {
+	         toplength: -20,
+	         bottomlength: 30,
+	         bottomwidth: 5,
+	         color: '#FF0A00',
+	         stroke: '#1A1A1A',
+	         stroke_width: 3,
+	         stroke_linecap: 'round',  
+	       },
+	       customSectors: [
+        		{color : "#00ff00",
+        		lo : 0,
+        		hi : 25},
+        		{color : "#FF8900",
+        		lo : 25,
+        		hi : 30},
+        		{color : "#FF0900",
+        		lo : 30,
+        		hi : 55}],
+      });
+        function customValue(val) {
+            return val+'\xB0'+'C'
+        }
+
+        
+        setInterval(rfr,100);
+        
+        function rfr () {
+        		$.ajax({//jquery ajax variable
+				type:'get', //type of query
+				dataType:'text', //data expected from server
+				url:'/state', //the url od script
+				data:{status:'state'} //data that it will be sent to the server
+		
+			})
+		 .done(function(status){// after a succesfull exchange this function it will be executed
+				var k=status.split(':'); // make an array of data
+				g1.refresh(k[0]);
+				g2.refresh(k[1]);
+				g3.refresh(k[2]);
+
+
+			});
+				      		
+        } 
+	})
+</script>
+
+
+<style type="text/css">
+	@font-face{
+		font-family: lcd;
+		src:url(res/digital-7.regular.ttf)
+	}
+	div{
+		border-style: double;	
+		border-color: red;
+		margin-left: 10px;
+		margin-top:10px;
+		font-family: lcd;
+		align-items: center;
+		position: relative;
+		background-color: #464752;
+		
+		
+	}
+
+	body{
+		background-color: #1A1A1A;		
+	}
+</style>
+
+</head>
+
+<body>
+	<div align="center" style="font-family: lcd; width: 730px; color: red;"><h1>Temperature server with Python & Arduino</h1></div>
+	
+	<div id="min" style="float: left; width: 200px; height:300px;"></div>
+	<div id="status" align="center" style="float: left; width: 300px; height:300px; "></div>
+	<div id="max" style="float: left; width: 200px; height:300px;"></div>
+	
+
+	
+</body>
+
+</html>

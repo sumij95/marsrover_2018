@@ -1,0 +1,147 @@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+
+    <style>
+        .outsideWrapper {
+            width: 800px;
+            height: 500px;
+            border: 1px solid blue;
+        }
+
+        .insideWrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .coveredImage {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        .coveringCanvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+    </style>
+
+    <div class="container-fluid">
+
+        <div class="row text-center">
+            
+                <script>
+                    
+                var arr;
+                arr = [ 23.948231 , 90.378829, 23.949270, 90.381249];
+
+                    var latNW = arr[0]; 
+                    var lonNW =arr[1];  
+                    var latSE = arr[2]; 
+                    var lonSE = arr[3]; 
+
+                    var lat_ = 100;
+                    var lon_ = 100;
+
+                    function change()
+                    {
+                        
+                        latNW = document.getElementById("latNW").value;
+                        lonNW = document.getElementById("lonNW").value;
+                        latSE = document.getElementById("latSE").value;
+                        lonSE = document.getElementById("lonSE").value;
+
+                        lat_ = document.getElementById("lat_").value;
+                        lon_ = document.getElementById("lon_").value;
+                    }
+                    function update()
+                    {
+                        document.getElementById("latNW").value = latNW;
+                        document.getElementById("lonNW").value = lonNW;
+                        document.getElementById("latSE").value = latSE;
+                        document.getElementById("lonSE").value = lonSE;
+
+                    }
+                </script>    
+                <p>Latitude niche naame, longitude side e bare </p>
+            <p>Lower Left </p> 
+            lat <input id="latNW" type="text" value="0"/>
+            lon <input id="lonNW" type="text" value="0"/>
+            <p>Upper Right</p>             
+            lat <input id="latSE" type="text" value="500"/>
+            lon <input id="lonSE" type="text" value="800"/>
+            <p></p>
+            lat <input id="lat_" type="text" value="100"/>
+            lon <input id="lon_" type="text" value="100"/>
+            
+            <button onclick="change()">Update</button>
+            <button onclick="update()">Set</button>
+                        
+            <h2>Bot Finder</h2>
+            <input id="lat_long" type="text" size="100" value="">
+        </div>
+
+        <center>
+            <div class="outsideWrapper">
+                <div class="insideWrapper">
+                    <img src="location.PNG" alt="map" height="500" width="800" class="coveredImage">
+
+                    <canvas class="coveringCanvas" id="myCanvas" width="800" height="500" style="border:1px solid #000000;">
+                    </canvas>
+
+                    <script> 
+
+
+                        var canvas = document.getElementById('myCanvas');
+                        var context = canvas.getContext('2d');
+                        var imageObj = new Image();
+
+                        function loadCanvas(markURL, y, x) {
+
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+                            imageObj.onload = function () {
+                                context.drawImage(this, y-10, x-30, 20, 30);
+                            };
+
+                            imageObj.src = markURL;
+                        }
+                        $(document).ready(function () {
+                            setInterval(rfr, 1000);
+                            function rfr() {
+                                $.ajax({
+                                    type: 'get', //type of query
+                                    dataType: 'text', //data expected from server
+                                    url: '/state', //the url od script
+                                    data: { status: 'state' } //data that it will be sent to the server
+
+                                }).done(
+                                    function (status) {// after a succesfull exchange this function it will be executed
+                                        var val = status.split(':'); // make an array of data
+                                        console.log(val);
+                                        // val[0] = lat_;
+                                        // val[1] = lon_;
+                                        var lat = 500 - (500 * (latNW -  val[0]))/(latNW - latSE);
+                                        var lon = 800 - (800 * (lonSE -  val[1]))/(lonSE - lonNW);
+                                        
+                                        document.getElementById("lat_long").value = status;
+                                        loadCanvas("mark.PNG",  lon, lat);
+                                    });
+                            }
+                        })
+                    </script>
+                </div>
+            </div>
+        </center>
+    </div>
